@@ -71,6 +71,7 @@ export interface CarouselProps {
     animationHandler: 'slide' | 'fade' | AnimationHandler;
     swipeAnimationHandler: SwipeAnimationHandler;
     stopSwipingHandler: StopSwipingHandler;
+    preventSwipeSelector?: string;
 }
 
 export interface CarouselState {
@@ -88,4 +89,5 @@ export interface CarouselState {
     slideStyle?: React.CSSProperties;
     selectedStyle?: React.CSSProperties;
     prevStyle?: React.CSSProperties;
+    swipePrevented: boolean;
 }

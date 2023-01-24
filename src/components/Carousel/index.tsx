@@ -5,7 +5,7 @@ import klass from '../../cssClasses';
 import Thumbs from '../Thumbs';
 import getDocument from '../../shims/document';
 import getWindow from '../../shims/window';
-import { noop, defaultStatusFormatter, isKeyboardEvent } from './utils';
+import { noop, defaultStatusFormatter, isKeyboardEvent, matchesSelector } from './utils';
 import { AnimationHandler, CarouselProps, CarouselState } from './types';
 import {
     slideAnimationHandler,
@@ -133,6 +133,7 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
             slideStyle: {},
             selectedStyle: {},
             prevStyle: {},
+            swipePrevented: false,
         };
 
         this.animationHandler =
@@ -435,6 +436,19 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
     };
 
     onSwipeStart = (event: React.TouchEvent) => {
+        if (this.props.preventSwipeSelector) {
+            const hasMatch = matchesSelector(
+                this.props.preventSwipeSelector,
+                event.target as HTMLElement,
+                this.carouselWrapperRef
+            );
+            this.setState({
+                swipePrevented: hasMatch,
+            });
+            if (hasMatch) {
+                return;
+            }
+        }
         this.setState({
             swiping: true,
         });
@@ -442,6 +456,9 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
     };
 
     onSwipeEnd = (event: React.TouchEvent) => {
+        if (this.state.swipePrevented) {
+            return;
+        }
         this.setState({
             swiping: false,
             cancelClick: false,
@@ -457,6 +474,9 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
     };
 
     onSwipeMove = (delta: { x: number; y: number }, event: React.TouchEvent) => {
+        if (this.state.swipePrevented) {
+            return false;
+        }
         this.props.onSwipeMove(event);
 
         const animationHandlerResponse = this.props.swipeAnimationHandler(
@@ -534,6 +554,9 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
     };
 
     onSwipeForward = () => {
+        if (this.state.swipePrevented) {
+            return;
+        }
         this.increment(1);
 
         if (this.props.emulateTouch) {
@@ -542,6 +565,9 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
     };
 
     onSwipeBackwards = () => {
+        if (this.state.swipePrevented) {
+            return;
+        }
         this.decrement(1);
 
         if (this.props.emulateTouch) {
