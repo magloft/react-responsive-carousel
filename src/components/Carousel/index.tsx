@@ -436,6 +436,10 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
     };
 
     onSwipeStart = (event: React.TouchEvent) => {
+        if (event.touches.length > 1) {
+            this.setState({ swipePrevented: true });
+            return;
+        }
         if (this.props.preventSwipeSelector) {
             const hasMatch = matchesSelector(this.props.preventSwipeSelector, event.target as HTMLElement);
             this.setState({
