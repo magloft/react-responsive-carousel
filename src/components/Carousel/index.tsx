@@ -134,6 +134,7 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
             selectedStyle: {},
             prevStyle: {},
             swipePrevented: false,
+            startYAxis: 0,
         };
 
         this.animationHandler =
@@ -437,7 +438,10 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
 
     onSwipeStart = (event: React.TouchEvent) => {
         if (event.touches.length > 1) {
-            this.setState({ swipePrevented: true });
+            this.setState({
+                swipePrevented: true,
+                startYAxis: 0,
+            });
             return;
         }
         if (this.props.preventSwipeSelector) {
@@ -448,6 +452,7 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
             );
             this.setState({
                 swipePrevented: hasMatch,
+                startYAxis: 0,
             });
             if (hasMatch) {
                 return;
@@ -455,6 +460,7 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
         }
         this.setState({
             swiping: true,
+            startYAxis: event.touches[0].clientY,
         });
         this.props.onSwipeStart(event);
     };
@@ -479,6 +485,16 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
 
     onSwipeMove = (delta: { x: number; y: number }, event: React.TouchEvent) => {
         if (this.state.swipePrevented) {
+            return false;
+        }
+        if (
+            Math.abs(delta.x) < this.props.swipeScrollTolerance &&
+            Math.abs(event.touches[0].clientY - this.state.startYAxis) > this.props.swipeScrollTolerance
+        ) {
+            this.setState({
+                swipePrevented: true,
+                startYAxis: 0,
+            });
             return false;
         }
         this.props.onSwipeMove(event);

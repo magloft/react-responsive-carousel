@@ -90,4 +90,5 @@ export interface CarouselState {
     selectedStyle?: React.CSSProperties;
     prevStyle?: React.CSSProperties;
     swipePrevented: boolean;
+    startYAxis: number;
 }
