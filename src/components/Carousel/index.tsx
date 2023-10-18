@@ -441,7 +441,11 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
             return;
         }
         if (this.props.preventSwipeSelector) {
-            const hasMatch = matchesSelector(this.props.preventSwipeSelector, event.target as HTMLElement);
+            const hasMatch = matchesSelector(
+                this.props.preventSwipeSelector,
+                event.target as HTMLElement,
+                this.carouselWrapperRef
+            );
             this.setState({
                 swipePrevented: hasMatch,
             });
