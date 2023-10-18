@@ -6,15 +6,18 @@ import(/* webpackChunkName: "carousel-component" */ './components/Carousel').the
         <Carousel
             showArrows
             infiniteLoop
-            autoPlay
+            autoPlay={false}
             emulateTouch
+            preventSwipeSelector=".legend"
             onClickItem={(...args) => console.log('onClickItem', ...args)}
             onChange={(...args) => console.log('onChange', ...args)}
             onClickThumb={(...args) => console.log('onClickThumb', ...args)}
         >
             <div>
                 <img src="assets/1.jpeg" />
-                <p className="legend">Legend 1</p>
+                <p className="legend">
+                    Legend <span>foobar</span> 1
+                </p>
             </div>
             <div>
                 <img src="assets/2.jpeg" />
