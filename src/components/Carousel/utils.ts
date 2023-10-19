@@ -55,20 +55,16 @@ export const setPosition = (position: number, axis: 'horizontal' | 'vertical'): 
     return style;
 };
 
-export const matchesSelector = (selector: string | string[], element: HTMLElement | null) => {
-    while (element) {
-        if (Array.isArray(selector)) {
-            for (const sel of selector) {
-                if (element.getAttribute('data-widget')?.toLowerCase() === sel.toLowerCase()) {
-                    return true;
-                }
-            }
-        } else {
-            if (element.getAttribute('data-widget')?.toLowerCase() === selector.toLowerCase()) {
-                return true;
-            }
+export const matchesSelector = (selector: string, element: HTMLElement, root?: HTMLElement) => {
+    let currentElement: HTMLElement | null = element;
+    while (currentElement) {
+        if (currentElement.matches(selector)) {
+            return true;
         }
-        element = element.parentElement;
+        if (root && currentElement === root) {
+            return false;
+        }
+        currentElement = currentElement.parentElement;
     }
     return false;
 };
