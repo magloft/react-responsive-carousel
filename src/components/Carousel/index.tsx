@@ -437,7 +437,7 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
     };
 
     onSwipeStart = (event: React.TouchEvent) => {
-        if (event.touches.length > 1) {
+        if (event?.touches && event.touches.length > 1) {
             this.setState({
                 swipePrevented: true,
                 startYAxis: 0,
@@ -460,7 +460,7 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
         }
         this.setState({
             swiping: true,
-            startYAxis: event.touches[0].clientY,
+            startYAxis: event?.touches ? event.touches[0].clientY : 0,
         });
         this.props.onSwipeStart(event);
     };
@@ -488,6 +488,7 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
             return false;
         }
         if (
+            event?.touches &&
             Math.abs(delta.x) < this.props.swipeScrollTolerance &&
             Math.abs(event.touches[0].clientY - this.state.startYAxis) > this.props.swipeScrollTolerance
         ) {
